@@ -63,19 +63,25 @@ void buttonPress(int stage1, int stage2) {
     }
 }
 
+/* Function to print message on display
+pos - position, row - row, msg - message, scroll - 0 is static and 1 is scrolling */
+void printAtCursor(int pos, int row, String msg, int scroll = 0) {
+  lcd.setCursor(pos, row);
+  if (scroll == 1) {
+    lcd.print(Scroll_LCD_Left(msg));
+  } else {
+    lcd.print(msg);
+  }
+}
+
 void setup() {
     lcd.begin(16, 2);
-
     pinMode(2, INPUT_PULLUP);
     pinMode(4, INPUT_PULLUP);
-
-    Serial.begin(9600);
-
+    // Serial.begin(9600);
     lcd.setRGB(colorR, colorG, colorB);
-
     servo.attach(servoPin);
     servo.write(90);
-
     delay(1000);
 }
 
@@ -87,38 +93,30 @@ void loop() {
     case 0:   //initial stage
       if (millis() >= time1 + interval1) {
         time1 = millis();
-        lcd.setCursor(0, 0);
-        lcd.print(Scroll_LCD_Left("Do you have a ticket?"));
+        printAtCursor(0, 0, "Do you have a ticket?", 1);
       }
-      lcd.setCursor(0, 1);
-      lcd.print("   Yes     No   ");
+      printAtCursor(0, 1, "   Yes     No   ");
       buttonPress(1,2);
       break;
     case 1:   //scanning
-      lcd.setCursor(0, 0);
-      lcd.print("Please scan it");
-      lcd.setCursor(0, 1);
+      printAtCursor(0, 0, "Please scan it");
       buttonPress(10,0);
       break;
     case 2:   //purchase confirmation
       if (millis() >= time1 + interval1) {
         time1 = millis();
-        lcd.setCursor(0, 0);
-        lcd.print(Scroll_LCD_Left("Buy a ticket? 1 day - 15eur"));
+        printAtCursor(0, 0, "Buy a ticket? 1 day - 15eur", 1);
       }
-      lcd.setCursor(0, 1);
-      lcd.print("   Yes     No   ");
+      printAtCursor(0, 1, "   Yes     No   ");
       buttonPress(10,0);
       break;
     case 3:   //opening gate
-      lcd.setCursor(0, 0);
-      lcd.write("Please wait");
+      printAtCursor(0, 0, "Please wait");
       for(servoAngle = 90; servoAngle > 0; servoAngle--) {
         servo.write(servoAngle);
         delay(servoDelay);
       }
-      lcd.setCursor(0, 0);
-      lcd.write("Gate is open");
+      printAtCursor(0, 0, "Gate is open");
       delay(5000);
       stage = 4;
       break;
@@ -126,8 +124,7 @@ void loop() {
       RangeInCentimeters = ultrasonic.MeasureInCentimeters();
       if (RangeInCentimeters >= 10) {
         lcd.clear();
-        lcd.setCursor(0, 0);
-        lcd.write("Closing");
+        printAtCursor(0, 0, "Closing");
         for(servoAngle = 0; servoAngle < 90; servoAngle++) {
           servo.write(servoAngle);
           delay(servoDelay);
@@ -139,8 +136,7 @@ void loop() {
       if (millis() >= time2 + interval2) {
         time2 = millis();
         lcd.clear();
-        lcd.setCursor(0, 0);
-        lcd.print("Verifying");
+        printAtCursor(0, 0, "Verifying");
         lcd.print(loading[loadingCounter]);
         if (loadingCounter < 3) {
           loadingCounter++;
