@@ -11,7 +11,6 @@ unsigned long time2 = 0;
 
 rgb_lcd lcd;
 
-
 Ultrasonic ultrasonic(8);
 
 int stage = 0;
@@ -38,17 +37,17 @@ int currentState2;
 int loadingCounter = 0;
 String loading[4] = {"", ".", "..", "..."};
 
-int Li=16;
-int Lii=0;
+int position=16;
+int lenght=0;
 String Scroll_LCD_Left(String StrDisplay) {
    String result;
    String StrProcess = "                " + StrDisplay + "                ";
-   result = StrProcess.substring(Li,Lii);
-   Li++;
-   Lii++;
-   if (Li>StrProcess.length()) {
-     Li=16;
-     Lii=0;
+   result = StrProcess.substring(position,lenght);
+   position++;
+   lenght++;
+   if (position>StrProcess.length()) {
+     position=16;
+     lenght=0;
    }
    return result;
 }
