@@ -6,8 +6,7 @@
 #define interval1 200
 #define interval2 800
 
-unsigned long time1 = 0;
-unsigned long time2 = 0;
+unsigned long time = 0;
 
 rgb_lcd lcd;
 
@@ -85,13 +84,12 @@ void setup() {
 }
 
 void loop() {
-  long RangeInCentimeters;
   currentState1 = digitalRead(2);
   currentState2 = digitalRead(4);
   switch (stage) {
     case 0:   //initial stage
-      if (millis() >= time1 + interval1) {
-        time1 = millis();
+      if (millis() >= time + interval1) {
+        time = millis();
         printAtCursor(0, 0, "Do you have a ticket?", 1);
       }
       printAtCursor(0, 1, "   Yes     No   ");
@@ -102,8 +100,8 @@ void loop() {
       buttonPress(10,0);
       break;
     case 2:   //purchase confirmation
-      if (millis() >= time1 + interval1) {
-        time1 = millis();
+      if (millis() >= time + interval1) {
+        time = millis();
         printAtCursor(0, 0, "Buy a ticket? 1 day - 15eur", 1);
       }
       printAtCursor(0, 1, "   Yes     No   ");
@@ -120,8 +118,7 @@ void loop() {
       stage = 4;
       break;
     case 4:   //closing gate
-      RangeInCentimeters = ultrasonic.MeasureInCentimeters();
-      if (RangeInCentimeters >= 10) {
+      if (ultrasonic.MeasureInCentimeters() >= 10) {
         lcd.clear();
         printAtCursor(0, 0, "Closing");
         for(servoAngle = 0; servoAngle < 90; servoAngle++) {
@@ -132,8 +129,8 @@ void loop() {
       }
       break;
     case 10:    //veryfing purchase
-      if (millis() >= time2 + interval2) {
-        time2 = millis();
+      if (millis() >= time + interval2) {
+        time = millis();
         lcd.clear();
         printAtCursor(0, 0, "Verifying");
         lcd.print(loading[loadingCounter]);
