@@ -22,7 +22,7 @@ int sensorVal = 0;
 
 Servo servo;
 int servoPin = 7;
-int servoAngle = 0;
+int servoAngle = 90;
 int servoDelay = 15;
 
 int buttonState1 = 0;
@@ -79,7 +79,7 @@ void setup() {
     // Serial.begin(9600);
     lcd.setRGB(colorR, colorG, colorB);
     servo.attach(servoPin);
-    servo.write(90);
+    servo.write(servoAngle);
     delay(1000);
 }
 
@@ -109,7 +109,7 @@ void loop() {
       break;
     case 3:   //opening gate
       printAtCursor(0, 0, "Please wait");
-      for(servoAngle = 90; servoAngle > 0; servoAngle--) {
+      for(servoAngle; servoAngle > 0; servoAngle--) {
         servo.write(servoAngle);
         delay(servoDelay);
       }
@@ -121,7 +121,7 @@ void loop() {
       if (ultrasonic.MeasureInCentimeters() >= 10) {
         lcd.clear();
         printAtCursor(0, 0, "Closing");
-        for(servoAngle = 0; servoAngle < 90; servoAngle++) {
+        for(servoAngle; servoAngle < 90; servoAngle++) {
           servo.write(servoAngle);
           delay(servoDelay);
         }
