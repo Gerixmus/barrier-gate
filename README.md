@@ -11,4 +11,16 @@ Barrier Gate is a project created using arduino. It is a scaled version of real 
 5. Now the servo motor will open the gate. You have 5 seconds to move after which ultrasonic sensor will be turned on.
 6. The ultrasonic sensor will wait untill area in front of it will be clear. Once that is true gate will be closed and the program will return to step 1.
 
-![DIAGRAM!](barrier-gate.jpg)
+## Hardware
+
+These are the components I'm currently using:
+
+- Arduino Uno Rev3
+- Grove - LCD RGB Backlight
+- Grove - Ultrasonic Ranger
+- TowerPro SG90
+- 2 push buttons
+
+## Connection schematic
+
+![SCHEMATIC !](barrier-gate.jpg)
