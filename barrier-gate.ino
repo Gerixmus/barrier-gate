@@ -8,34 +8,38 @@
 
 unsigned long time = 0;
 
-rgb_lcd lcd;
-
 Ultrasonic ultrasonic(8);
 
 int stage = 0;
 
+//LCD config (background color for LCD)
+rgb_lcd lcd;
 const int colorR = 255;
 const int colorG = 255;
 const int colorB = 255;
 
-int sensorVal = 0;
-
+//servo config
 Servo servo;
 int servoPin = 7;
 int servoAngle = 90;
 int servoDelay = 15;
 
+//button1 config
 int buttonState1 = 0;
 int lastState1 = HIGH; 
 int currentState1;
 
+//button2 config
 int buttonState2 = 0;
 int lastState2 = HIGH; 
 int currentState2;
 
+//code for loading screens
 int loadingCounter = 0;
 String loading[4] = {"", ".", "..", "..."};
 
+// function for scrolling only one line on LCD
+// https://www.youtube.com/watch?v=tbGuXnqwYWU&ab_channel=UtehStr
 int position=16;
 int lenght=0;
 String Scroll_LCD_Left(String StrDisplay) {
@@ -51,6 +55,8 @@ String Scroll_LCD_Left(String StrDisplay) {
    return result;
 }
 
+// function to select next stage
+// button 1 - stage1, button 2 - stage2
 void buttonPress(int stage1, int stage2) {
     if (lastState1 == HIGH && currentState1 == LOW) {
         lcd.clear();
@@ -61,7 +67,7 @@ void buttonPress(int stage1, int stage2) {
     }
 }
 
-/* Function to print message on display
+/* function to print message on display
 pos - position, row - row, msg - message, scroll - 0 is static and 1 is scrolling */
 void printAtCursor(int pos, int row, String msg, int scroll = 0) {
   lcd.setCursor(pos, row);
@@ -76,7 +82,6 @@ void setup() {
     lcd.begin(16, 2);
     pinMode(2, INPUT_PULLUP);
     pinMode(4, INPUT_PULLUP);
-    // Serial.begin(9600);
     lcd.setRGB(colorR, colorG, colorB);
     servo.attach(servoPin);
     servo.write(servoAngle);
@@ -84,10 +89,12 @@ void setup() {
 }
 
 void loop() {
+  // saving current state of buttons
   currentState1 = digitalRead(2);
   currentState2 = digitalRead(4);
   switch (stage) {
     case 0:   //initial stage
+      servo.detach();
       if (millis() >= time + interval1) {
         time = millis();
         printAtCursor(0, 0, "Do you have a ticket?", 1);
@@ -108,6 +115,7 @@ void loop() {
       buttonPress(10,0);
       break;
     case 3:   //opening gate
+      servo.attach(servoPin);
       printAtCursor(0, 0, "Please wait");
       for(servoAngle; servoAngle > 0; servoAngle--) {
         servo.write(servoAngle);
@@ -143,6 +151,7 @@ void loop() {
       buttonPress(3,0);
       break;
   }
+  // saving last state for button debounce
   lastState1 = currentState1;
   lastState2 = currentState2;
 }
